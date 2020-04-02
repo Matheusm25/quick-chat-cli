@@ -2,6 +2,7 @@ const Auth = require('../services/auth');
 
 module.exports = toolbox => {
   async function login(socketId) {
+    console.log(socketId)
     const {
       prompt,
       print,

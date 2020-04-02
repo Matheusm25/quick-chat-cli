@@ -37,6 +37,13 @@ module.exports = {
     });
   },
 
+  // For tests only
+  async get(req, res) {
+    const { id } = req.body;
+    const data = await connection('users').where({ userId: id });
+    return res.json(data);
+  },
+
   // Log off
   async delete(req, res) {
     const {

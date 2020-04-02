@@ -10,10 +10,12 @@ module.exports = {
       prompt,
       chatInit,
       logout,
+      sleep,
     } = toolbox;
-
-    const userId = await login(socket.id);
     
+    await sleep(100);
+    const userId = await login(socket.id);
+
     print.success('You are now connected.');
     print.info('We will let you know when someone wants to talk.');
     print.info('Press ctrl + C to cancel.');

@@ -2,6 +2,10 @@ module.exports = toolbox => {
   async function chatInit(chatId, socket) {
     const { sleep, prompt } = toolbox;
 
+    socket.on('response', (response) => {
+      print.info(response);
+    })
+
     let message = {};
     while (message.message !== '\\q') {
       await sleep(300);

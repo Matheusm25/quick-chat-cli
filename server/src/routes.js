@@ -8,6 +8,7 @@ const routes = express.Router();
 routes.post('/user', UserController.store);
 routes.post('/login', UserController.create);
 routes.post('/logoff', UserController.delete);
+routes.post('/select', UserController.get);
 
 routes.post('/connect', ChatController.connectUser);
 

@@ -21,12 +21,12 @@ module.exports = {
         .where({ id: data.chatId })
         .first();
 
-      console.log(result);
+      socket.to(result.receivingSocketId).emit('response', data.message);
 
-      socket.to(result.receivingSocketId).emit('wantToTalk', {
-        chatId: data.chatId,
-        username: result.receivingUsername,
-      });
+      // socket.to(result.receivingSocketId).emit('wantToTalk', {
+      //   chatId: data.chatId,
+      //   username: result.receivingUsername,
+      // });
     });
 
     socket.on('closeChat', async data => {
