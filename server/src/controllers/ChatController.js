@@ -14,4 +14,8 @@ module.exports = {
       console.log('user disconnected');
     });
   },
+
+  async connectUser(socket) {
+
+  },
 };
