@@ -1,4 +1,6 @@
 const connection = require('../database/connection');
+const generateUniqueId = require('../utils/GenerateUniqueId');
+const UserController = require('../controllers/UserController');
 
 module.exports = {
   async message(socket) {
@@ -12,6 +14,11 @@ module.exports = {
       }
     });
 
+    socket.on('closeChat', async data => {
+      await connection('chat').update({ enabled: false }).where({ id: data.chatId });
+      console.log(`Chat ${data.chatId} closed`);
+    });
+
     socket.on('disconnect', () => {
       console.log('user disconnected');
     });
@@ -19,7 +26,8 @@ module.exports = {
 
   async connectUser(req, res) {
     const {
-      username,
+      userId,
+      userToName: username,
     } = req.body;
 
     const user = await connection('users')
@@ -27,20 +35,36 @@ module.exports = {
       .where({ username })
       .first();
 
+    // Check if user exists
     if (!user) {
       return res.status(404).json({
         error: 'Cannot find user',
       });
     }
 
+    // Check if user is available/connected
     if (!user.available) {
       return res.status(406).json({
-        error: 'User is not connected',
+        error: 'User is not connected or chating with someone else',
       });
     }
 
+    await connection('users')
+      .update({ available: false })
+      .whereIn('userId', [userId, user.userId]);
+
+    const chatId = generateUniqueId();
+
+    await connection('chat')
+      .insert({
+        id: chatId,
+        sendingId: userId,
+        receivingId: user.userId,
+        enabled: true,
+      });
+
     return res.status(200).json({
-      id: user.userId,
+      chatId,
     });
   },
 };

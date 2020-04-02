@@ -28,7 +28,9 @@ module.exports = {
           socketId,
         })
         .where({ username });
-      return res.status(200).send();
+      return res.status(200).json({
+        userId: user.userId,
+      });
     }
     return res.status(401).json({
       error: 'Invalid password',
@@ -38,12 +40,12 @@ module.exports = {
   // Log off
   async delete(req, res) {
     const {
-      username,
+      userId,
     } = req.body;
 
     const user = await connection('users')
       .select('*')
-      .where({ username })
+      .where({ userId })
       .first();
 
     // Check if the user exists
@@ -59,7 +61,7 @@ module.exports = {
           available: false,
           socketId: '',
         })
-        .where({ username });
+        .where({ userId });
     }
 
     return res.status(204).send();
