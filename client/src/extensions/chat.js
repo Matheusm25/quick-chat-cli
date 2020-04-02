@@ -1,18 +1,17 @@
 module.exports = toolbox => {
-  async function chatInit({ chatId, socket, userId }) {
-    const { sleep, prompt, print } = toolbox;
+  async function chatInit({ chatId, socket, userId, readline }) {
+    const { sleep, plainPrompt, print } = toolbox;
 
     socket.on('response', (response) => {
-      print.info(`\n${response}\n`);
+      console.log(`\n > ${response}\n > `);
     })
 
     let message = {};
-    while (message.message !== '\\q') {
-      await sleep(300);
-      message = await prompt.ask({type: 'text', name: 'message', message: ' ', edgeLength: 0});
-      if (message.message !== '\\q') {
+    while (message !== '\\q') {
+      message = await plainPrompt(' > ', readline);
+      if (message !== '\\q') {
         socket.emit('message', {
-          message: message.message,
+          message,
           chatId,
           userId,
         });
