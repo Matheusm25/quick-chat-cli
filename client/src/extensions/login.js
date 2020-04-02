@@ -2,7 +2,6 @@ const Auth = require('../services/auth');
 
 module.exports = toolbox => {
   async function login(socketId) {
-    console.log(socketId)
     const {
       prompt,
       print,
@@ -10,7 +9,7 @@ module.exports = toolbox => {
 
     print.info('Please insert your username and password to log in:');
     const { username, password} = await prompt.ask([
-      { type: 'text', name: 'username', message: 'Username:'},
+      { type: 'input', name: 'username', message: 'Username:'},
       { type: 'invisible', name: 'password', message: 'Password:'},
     ])
 

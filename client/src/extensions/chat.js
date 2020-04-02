@@ -1,9 +1,9 @@
 module.exports = toolbox => {
-  async function chatInit(chatId, socket) {
-    const { sleep, prompt } = toolbox;
+  async function chatInit({ chatId, socket, userId }) {
+    const { sleep, prompt, print } = toolbox;
 
     socket.on('response', (response) => {
-      print.info(response);
+      print.info(`\n${response}\n`);
     })
 
     let message = {};
@@ -13,7 +13,8 @@ module.exports = toolbox => {
       if (message.message !== '\\q') {
         socket.emit('message', {
           message: message.message,
-          chatId: chatId,
+          chatId,
+          userId,
         });
       }
     }

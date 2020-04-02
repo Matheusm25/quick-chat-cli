@@ -1,4 +1,6 @@
 const connection = require('../database/connection');
+const ChatQuerys = require('../database/utils/chatQuerys');
+
 const generateUniqueId = require('../utils/GenerateUniqueId');
 
 module.exports = {
@@ -8,25 +10,31 @@ module.exports = {
     socket.on('message', async data => {
       console.log(data);
 
-      const result = await connection('chat')
-        .join('users AS sending', 'chat.sendingId', '=', 'sending.userId')
-        .join('users AS receiving', 'chat.receivingId', '=', 'receiving.userId')
-        .select([
-          'chat.*',
-          'receiving.socketId AS receivingSocketId',
-          'sending.socketId AS sendingSocketId',
-          'sending.username AS sendingUsername',
-          'receiving.username AS receivingUsername',
-        ])
-        .where({ id: data.chatId })
-        .first();
+      const result = await ChatQuerys.getChat(data.chatId);
 
-      socket.to(result.receivingSocketId).emit('response', data.message);
+      if (data.userId === result.sendingId) {
+        socket.to(result.receivingSocketId).emit('response', data.message);
+      } else {
+        socket.to(result.sendingSocketId).emit('response', data.message);
+      }
+    });
 
-      // socket.to(result.receivingSocketId).emit('wantToTalk', {
-      //   chatId: data.chatId,
-      //   username: result.receivingUsername,
-      // });
+    socket.on('talkTo', async data => {
+      const result = await ChatQuerys.getChat(data.chatId);
+
+      socket.to(result.receivingSocketId).emit('wantToTalk', {
+        chatId: data.chatId,
+        username: result.receivingUsername,
+      });
+    });
+
+    socket.on('chatResponse', async data => {
+      const result = await ChatQuerys.getChat(data.chatId);
+
+      socket.to(result.sendingSocketId).emit('requestChatResponse', {
+        chatId: data.chatId,
+        response: data.response,
+      });
     });
 
     socket.on('closeChat', async data => {

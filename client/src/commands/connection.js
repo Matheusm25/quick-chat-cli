@@ -20,12 +20,29 @@ module.exports = {
     const userId = await login(socket.id);
 
     const { toUser } = await prompt.ask({ type: 'text', name: 'toUser', message: 'Connect to user:'});
+
     const { chatId } = await Auth.connectTo(userId, toUser);
 
-    await chatInit(chatId, socket);
+    socket.emit('talkTo', {
+      chatId,
+      toUser,
+    });
 
-    await logout(userId);
-    socket.emit('closeChat', { chatId });
-    socket.close();
+    const spinner = print.spin('Waiting for the user response.');
+
+    socket.on('requestChatResponse', async data => {
+      if (data.response) {
+        spinner.succeed('Starting chat now.');
+        if (data.chatId === chatId) {
+          await chatInit({ chatId, socket, userId });
+          await logout(userId);
+          socket.emit('closeChat', { chatId });
+          socket.close();
+        }
+      } else {
+        spinner.fail('Your request was denied.')
+      }
+    });
+    
   }
 }

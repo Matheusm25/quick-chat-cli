@@ -23,11 +23,22 @@ module.exports = {
     socket.on('wantToTalk', async data => {
       const confirmation = await prompt.confirm(`${data.username} wants to talk with you, do you accept?`);
       if (confirmation) {
-        chatInit(data.chatId, socket);
+        socket.emit('chatResponse', {
+          chatId: data.chatId,
+          response: true,
+        });
+        
+        
+        await chatInit({ chatId: data.chatId, socket, userId });
 
         await logout(userId);
         socket.emit('closeChat', { chatId: data.chatId });
         socket.close();
+      } else {
+        socket.emit('chatResponse', {
+          chatId: data.chatId,
+          response: false,
+        });
       }
     });
     
