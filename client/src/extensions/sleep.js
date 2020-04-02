@@ -1,4 +1,3 @@
-  
 module.exports = toolbox => {
   function sleep(ms) {
     return new Promise((resolve) => {

@@ -5,12 +5,28 @@ module.exports = {
   async message(socket) {
     console.log('a user connected');
 
-    socket.on('message', message => {
-      console.log(message);
+    socket.on('message', async data => {
+      console.log(data);
 
-      if (message.message === '3') {
-        socket.emit('another', 'something');
-      }
+      const result = await connection('chat')
+        .join('users AS sending', 'chat.sendingId', '=', 'sending.userId')
+        .join('users AS receiving', 'chat.receivingId', '=', 'receiving.userId')
+        .select([
+          'chat.*',
+          'receiving.socketId AS receivingSocketId',
+          'sending.socketId AS sendingSocketId',
+          'sending.username AS sendingUsername',
+          'receiving.username AS receivingUsername',
+        ])
+        .where({ id: data.chatId })
+        .first();
+
+      console.log(result);
+
+      socket.to(result.receivingSocketId).emit('wantToTalk', {
+        chatId: data.chatId,
+        username: result.receivingUsername,
+      });
     });
 
     socket.on('closeChat', async data => {
@@ -48,6 +64,8 @@ module.exports = {
       });
     }
 
+    // Disable users so no one can send them requests
+    // while they are talking to each other
     await connection('users')
       .update({ available: false })
       .whereIn('userId', [userId, user.userId]);
