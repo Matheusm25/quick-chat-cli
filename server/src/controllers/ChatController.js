@@ -1,6 +1,5 @@
 const connection = require('../database/connection');
 const generateUniqueId = require('../utils/GenerateUniqueId');
-const UserController = require('../controllers/UserController');
 
 module.exports = {
   async message(socket) {

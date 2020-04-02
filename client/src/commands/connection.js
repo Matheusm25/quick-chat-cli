@@ -33,7 +33,10 @@ module.exports = {
       await sleep(300);
       message = await prompt.ask({type: 'text', name: 'message', message: ' ', edgeLength: 0});
       if (message.message !== '\\q') {
-        socket.emit('message', message);
+        socket.emit('message', {
+          message: message.message,
+          chatId: chatId,
+        });
       }
     }
 

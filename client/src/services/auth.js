@@ -1,10 +1,24 @@
 const axios = require('axios');
 const { print } = require('gluegun/print');
 
+const apiLink = 'http://localhost:3333';
+
 module.exports = {
+  async register(username, password) {
+    try {
+      const { data } = await axios.post(`${apiLink}/user`, {
+        username,
+        password,
+      });
+    } catch (err) {
+      print.error(err.response.data.error);
+      process.exit();
+    }
+  },
+
   async login(username, password, socketId) {
     try {
-      const { data } = await axios.post('http://localhost:3333/login', {
+      const { data } = await axios.post(`${apiLink}/login`, {
         username,
         password,
         socketId,
@@ -19,7 +33,7 @@ module.exports = {
 
   async logoff(userId) {
     try {
-      const { data } = await axios.post('http://localhost:3333/logoff', {
+      const { data } = await axios.post(`${apiLink}/logoff`, {
         userId,
       });
   
@@ -32,7 +46,7 @@ module.exports = {
 
   async connectTo(userId, userToName) {
     try {
-      const { data } = await axios.post('http://localhost:3333/connect', {
+      const { data } = await axios.post(`${apiLink}/connect`, {
         userId,
         userToName,
       });
