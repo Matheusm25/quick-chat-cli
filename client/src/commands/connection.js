@@ -5,7 +5,6 @@ module.exports = {
   alias: ['conn'],
   run: async toolbox => {
     const socket = io('http://localhost:3333');
-
     const {
       prompt,
       print,

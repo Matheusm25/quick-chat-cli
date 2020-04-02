@@ -1,3 +1,5 @@
+const connection = require('../database/connection');
+
 module.exports = {
   async message(socket) {
     console.log('a user connected');
@@ -15,7 +17,30 @@ module.exports = {
     });
   },
 
-  async connectUser(socket) {
+  async connectUser(req, res) {
+    const {
+      username,
+    } = req.body;
 
+    const user = await connection('users')
+      .select('*')
+      .where({ username })
+      .first();
+
+    if (!user) {
+      return res.status(404).json({
+        error: 'Cannot find user',
+      });
+    }
+
+    if (!user.available) {
+      return res.status(406).json({
+        error: 'User is not connected',
+      });
+    }
+
+    return res.status(200).json({
+      id: user.userId,
+    });
   },
 };
