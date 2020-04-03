@@ -1,0 +1,1 @@
+web: npx knex migrate:latest && yarn start
