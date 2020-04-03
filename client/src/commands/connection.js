@@ -23,7 +23,9 @@ module.exports = {
       output: process.stdout,
     });
 
-    await sleep(100);
+    do {
+      await sleep(30);
+    } while (!socket.id);
     const userId = await login(socket.id, rl);
 
     const toUser = await plainPrompt('Connect to user: ', rl);
