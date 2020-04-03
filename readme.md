@@ -41,7 +41,7 @@ $ quick-chat-cli reg
 
 then you must enter a username and a password, that's all you need to do to be ready to use!
 
-![](/assets/register.png)
+![](/assets/register-example.png)
 
 ## Chatting
 
@@ -57,7 +57,7 @@ $ quick-chat-cli login
 
 when other user try to connect with you, a message will apear asking for acceptance. If the answer is yes, the chat will begin.
 
-![](/assets/login.png)
+![](/assets/login-example.png)
 
 ### Connecting
 
@@ -73,7 +73,7 @@ or for short syntax:
 $ quick-chat-cli conn
 ```
 
-![](/assets/connect.png)
+![](/assets/connect-example.png)
 
 
 ## Credits
