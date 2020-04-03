@@ -45,8 +45,9 @@ module.exports = {
             chatId, socket, userId, readline: rl,
           });
           await logout(userId);
-          socket.emit('closeChat', { chatId });
+          socket.emit('closeChat', { chatId, userId });
           socket.close();
+          process.exit();
         }
       } else {
         spinner.fail('Your request was denied.');

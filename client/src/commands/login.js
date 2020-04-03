@@ -40,8 +40,9 @@ module.exports = {
         });
 
         await logout(userId);
-        socket.emit('closeChat', { chatId: data.chatId });
+        socket.emit('closeChat', { chatId: data.chatId, userId });
         socket.close();
+        process.exit();
       } else {
         socket.emit('chatResponse', {
           chatId: data.chatId,
