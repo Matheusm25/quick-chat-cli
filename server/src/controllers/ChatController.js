@@ -20,7 +20,9 @@ module.exports = {
     });
 
     socket.on('talkTo', async data => {
+      console.log('talkTo', data);
       const result = await ChatQuerys.getChat(data.chatId);
+      console.log('result talkTo', result);
 
       socket.to(result.receivingSocketId).emit('wantToTalk', {
         chatId: data.chatId,

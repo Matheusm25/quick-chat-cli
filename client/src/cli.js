@@ -2,9 +2,10 @@ const { build } = require('gluegun');
 
 async function run(argv) {
   const cli = build()
-    .brand('client')
+    .brand('quick-chat-cli')
     .src(__dirname)
     .plugins('./node_modules', { matching: 'client-*', hidden: true })
+    .defaultCommand()
     .help()
     .version()
     .create();

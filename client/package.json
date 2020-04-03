@@ -1,10 +1,9 @@
 {
-  "name": "client",
+  "name": "quick-chat-cli",
   "version": "0.0.1",
-  "description": "client CLI",
-  "private": true,
+  "description": "A cli for chat",
   "bin": {
-    "client": "bin/client"
+    "quick-chat-cli": "bin/quick-chat-cli"
   },
   "scripts": {
     "format": "prettier --write **/*.{js,json} && standard --fix",

@@ -48,6 +48,8 @@ module.exports = {
           chatId: data.chatId,
           response: false,
         });
+
+        process.exit();
       }
     });
   },

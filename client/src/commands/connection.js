@@ -51,6 +51,7 @@ module.exports = {
         }
       } else {
         spinner.fail('Your request was denied.');
+        process.exit();
       }
     });
   },
