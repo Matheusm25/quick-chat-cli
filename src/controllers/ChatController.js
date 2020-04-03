@@ -39,6 +39,14 @@ module.exports = {
 
     socket.on('closeChat', async data => {
       await connection('chat').update({ enabled: false }).where({ id: data.chatId });
+      const result = await ChatQuerys.getChat(data.chatId);
+
+      if (data.userId === result.sendingId) {
+        socket.to(result.receivingSocketId).emit('disconnectUser', {});
+      } else {
+        socket.to(result.sendingSocketId).emit('disconnectUser', {});
+      }
+
       console.log(`Chat ${data.chatId} closed`);
     });
 
