@@ -1,12 +1,13 @@
 const axios = require('axios');
 const { print } = require('gluegun/print');
+const config = require('../config');
 
-const apiLink = 'http://localhost:3333';
+const apiLink = config.SERVER_URL;
 
 module.exports = {
   async register(username, password) {
     try {
-      const { data } = await axios.post(`${apiLink}/user`, {
+      await axios.post(`${apiLink}/user`, {
         username,
         password,
       });
@@ -23,7 +24,7 @@ module.exports = {
         password,
         socketId,
       });
-  
+
       return data;
     } catch (err) {
       print.error(err.response.data.error);
@@ -36,7 +37,7 @@ module.exports = {
       const { data } = await axios.post(`${apiLink}/logoff`, {
         userId,
       });
-  
+
       return data;
     } catch (err) {
       print.error(err.response.data.error);
@@ -50,11 +51,11 @@ module.exports = {
         userId,
         userToName,
       });
-  
+
       return data;
     } catch (err) {
       print.error(err.response.data.error);
       process.exit();
     }
-  }
-}
+  },
+};

@@ -1,3 +1,4 @@
+const readline = require('readline');
 const Auth = require('../services/auth');
 
 module.exports = {
@@ -5,19 +6,25 @@ module.exports = {
   alias: ['reg'],
   run: async toolbox => {
     const {
-      prompt,
+      plainPrompt,
       print,
     } = toolbox;
 
-    // Log in 
+    const rl = readline.createInterface({
+      input: process.stdin,
+      output: process.stdout,
+    });
+
+    // Log in
     print.info('Please insert an username and password to register:');
-    const { username, password} = await prompt.ask([
-      { type: 'text', name: 'username', message: 'Username:'},
-      { type: 'invisible', name: 'password', message: 'Password:'},
-    ])
+
+    const username = await plainPrompt('Username: ', rl);
+    const password = await plainPrompt('Password: ', rl);
 
     await Auth.register(username, password);
 
     print.success('User registered');
-  }
-}
+
+    process.exit();
+  },
+};

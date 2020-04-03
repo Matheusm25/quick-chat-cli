@@ -1,10 +1,11 @@
 const io = require('socket.io-client');
 const readline = require('readline');
+const config = require('../config');
 
 module.exports = {
   name: 'login',
   run: async toolbox => {
-    const socket = io('http://localhost:3333');
+    const socket = io(config.SERVER_URL);
     const {
       login,
       print,
@@ -13,7 +14,7 @@ module.exports = {
       logout,
       sleep,
     } = toolbox;
-    
+
     const rl = readline.createInterface({
       input: process.stdin,
       output: process.stdout,
@@ -27,14 +28,16 @@ module.exports = {
     print.info('Press ctrl + C to cancel.');
 
     socket.on('wantToTalk', async data => {
-      const confirmation = await plainPrompt(`${data.username} wants to talk with you, do you accept? (y/N)`, rl);
+      const confirmation = await plainPrompt(`${data.username} wants to talk with you, do you accept (y/N): `, rl);
       if (confirmation === 'y') {
         socket.emit('chatResponse', {
           chatId: data.chatId,
           response: true,
         });
 
-        await chatInit({ chatId: data.chatId, socket, userId, readline: rl });
+        await chatInit({
+          chatId: data.chatId, socket, userId, readline: rl,
+        });
 
         await logout(userId);
         socket.emit('closeChat', { chatId: data.chatId });
@@ -46,7 +49,5 @@ module.exports = {
         });
       }
     });
-    
-
-  }
-}
+  },
+};
