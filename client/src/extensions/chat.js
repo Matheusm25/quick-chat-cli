@@ -1,3 +1,5 @@
+const CryptoJS = require('crypto-js');
+
 module.exports = toolbox => {
   async function chatInit({
     chatId,
@@ -10,7 +12,9 @@ module.exports = toolbox => {
     console.log('Send \\q to quit chat or press ctrl + c twice.');
 
     socket.on('response', response => {
-      process.stdout.write(`\x1b[36m${response}\x1b[0m\n > `);
+      const decryptedBytes = CryptoJS.AES.decrypt(response, socket.id);
+      const decryptedMessage = decryptedBytes.toString(CryptoJS.enc.Utf8);
+      process.stdout.write(`\x1b[36m${decryptedMessage}\x1b[0m\n > `);
     });
 
     socket.on('disconnectUser', () => {
@@ -23,7 +27,7 @@ module.exports = toolbox => {
       message = await plainPrompt(' > ', readline);
       if (message !== '\\q') {
         socket.emit('message', {
-          message,
+          message: CryptoJS.AES.encrypt(message, socket.id).toString(),
           chatId,
           userId,
         });

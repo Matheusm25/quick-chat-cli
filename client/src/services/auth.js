@@ -29,6 +29,7 @@ module.exports = {
     } catch (err) {
       print.error(err.response.data.error);
       process.exit();
+      return err;
     }
   },
 
@@ -42,6 +43,7 @@ module.exports = {
     } catch (err) {
       print.error(err.response.data.error);
       process.exit();
+      return err;
     }
   },
 
@@ -56,6 +58,7 @@ module.exports = {
     } catch (err) {
       print.error(err.response.data.error);
       process.exit();
+      return err;
     }
   },
 };

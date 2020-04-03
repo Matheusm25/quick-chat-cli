@@ -30,6 +30,8 @@
             "always"
         ],
         "arrow-parens": ["error", "as-needed"],
-        "no-await-in-loop": "off"
+        "no-await-in-loop": "off",
+        "no-console": "off",
+        "no-param-reassign": "off"
     }
 }
