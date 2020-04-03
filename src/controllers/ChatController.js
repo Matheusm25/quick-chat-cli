@@ -1,3 +1,5 @@
+const CryptoJS = require('crypto-js');
+
 const connection = require('../database/connection');
 const ChatQuerys = require('../database/utils/chatQuerys');
 
@@ -13,9 +15,15 @@ module.exports = {
       const result = await ChatQuerys.getChat(data.chatId);
 
       if (data.userId === result.sendingId) {
-        socket.to(result.receivingSocketId).emit('response', data.message);
+        const decryptedBytes = CryptoJS.AES.decrypt(data.message, result.sendingSocketId);
+        const decryptedMessage = decryptedBytes.toString(CryptoJS.enc.Utf8);
+        const newEncryptedMessage = CryptoJS.AES.encrypt(decryptedMessage, result.receivingSocketId).toString();
+        socket.to(result.receivingSocketId).emit('response', newEncryptedMessage);
       } else {
-        socket.to(result.sendingSocketId).emit('response', data.message);
+        const decryptedBytes = CryptoJS.AES.decrypt(data.message, result.receivingSocketId);
+        const decryptedMessage = decryptedBytes.toString(CryptoJS.enc.Utf8);
+        const newEncryptedMessage = CryptoJS.AES.encrypt(decryptedMessage, result.sendingSocketId).toString();
+        socket.to(result.sendingSocketId).emit('response', newEncryptedMessage);
       }
     });
 
@@ -26,7 +34,7 @@ module.exports = {
 
       socket.to(result.receivingSocketId).emit('wantToTalk', {
         chatId: data.chatId,
-        username: result.receivingUsername,
+        username: result.sendingUsername,
       });
     });
 
